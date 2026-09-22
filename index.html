@@ -1,0 +1,1241 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>La Cantina di Egon</title>
+<meta name="description" content="Catalogo personale della cantina vini: tipologie, produttori e mappa degli scaffali.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,450;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+
+  :root {
+    --ink: #2A1810;
+    --wine: #6E1423;
+    --wine-bright: #8E1B2E;
+    --wine-dark: #3A0B14;
+    --parchment: #F4EADA;
+    --parchment-deep: #E9D9BC;
+    --gold: #A9812F;
+    --gold-soft: #C9A65C;
+    --leaf: #5B6B44;
+    --wood: #4A2E1D;
+
+    --bg: var(--parchment);
+    --surface: #FBF6EC;
+    --text: var(--ink);
+    --text-soft: #6b5545;
+    --line: #d8c6a4;
+
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); -webkit-text-size-adjust: 100%; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #1C1210;
+      --surface: #241713;
+      --text: #EFE3D2;
+      --text-soft: #b9a68e;
+      --line: #4a382a;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #1C1210;
+    --surface: #241713;
+    --text: #EFE3D2;
+    --text-soft: #b9a68e;
+    --line: #4a382a;
+  }
+
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .serif {
+    font-family: 'Fraunces', Georgia, 'Times New Roman', serif;
+  }
+  a { color: inherit; }
+  button { font-family: inherit; cursor: pointer; }
+
+  /* ---------- Top bar ---------- */
+  .topbar {
+    position: sticky; top: 0; z-index: 40;
+    padding-top: calc(env(safe-area-inset-top, 0px));
+    background: var(--wine-dark);
+    border-bottom: 1px solid rgba(201,166,92,0.35);
+  }
+  .topbar-inner {
+    max-width: 1080px; margin: 0 auto;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 20px;
+    gap: 16px;
+  }
+  .brand {
+    display: flex; align-items: baseline; gap: 8px;
+    color: var(--parchment);
+    text-decoration: none;
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 1.15rem;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+  }
+  .brand .mark { color: var(--gold-soft); font-style: italic; font-weight: 400; }
+  nav.pills { display: flex; gap: 4px; flex-wrap: wrap; }
+  nav.pills button {
+    background: transparent;
+    border: 1px solid transparent;
+    color: rgba(244,234,218,0.75);
+    font-size: 0.85rem;
+    padding: 7px 12px;
+    border-radius: 3px;
+    transition: color .15s ease, border-color .15s ease, background .15s ease;
+  }
+  nav.pills button:hover { color: var(--parchment); }
+  nav.pills button.active {
+    color: var(--parchment);
+    border-color: rgba(201,166,92,0.55);
+    background: rgba(201,166,92,0.1);
+  }
+
+  main { max-width: 1080px; margin: 0 auto; padding: 0 20px 80px; }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    background: linear-gradient(180deg, var(--wine-dark) 0%, var(--wine) 130%);
+    color: var(--parchment);
+    margin: 0 0 44px;
+    padding: 64px 20px 46px;
+    border-bottom: 3px solid var(--gold);
+  }
+  .hero-inner { max-width: 1080px; margin: 0 auto; }
+  .hero-eyebrow {
+    font-size: 0.8rem;
+    color: var(--gold-soft);
+    letter-spacing: 0.04em;
+    margin: 0 0 10px;
+  }
+  .hero h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 450;
+    font-style: italic;
+    font-size: clamp(2.4rem, 6vw, 4rem);
+    margin: 0 0 14px;
+    line-height: 1.02;
+  }
+  .hero p.lead {
+    max-width: 46ch;
+    color: rgba(244,234,218,0.82);
+    font-size: 1.05rem;
+    margin: 0 0 30px;
+  }
+  .stat-strip {
+    display: flex; flex-wrap: wrap;
+    gap: 0;
+    border-top: 1px solid rgba(201,166,92,0.35);
+    padding-top: 22px;
+  }
+  .stat-strip .stat {
+    padding: 0 26px 0 0;
+    margin-right: 26px;
+    border-right: 1px solid rgba(201,166,92,0.3);
+  }
+  .stat-strip .stat:last-child { border-right: none; }
+  .stat .n {
+    font-family: 'Fraunces', serif;
+    font-size: 1.9rem;
+    color: var(--parchment);
+    display: block;
+    line-height: 1;
+  }
+  .stat .l {
+    font-size: 0.78rem;
+    color: rgba(244,234,218,0.65);
+    margin-top: 4px;
+    display: block;
+  }
+
+  /* ---------- Doors (home nav) ---------- */
+  .doors {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 56px;
+  }
+  @media (max-width: 760px) {
+    .doors { grid-template-columns: 1fr; }
+  }
+  .door {
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--wine);
+    padding: 26px 22px;
+    text-align: left;
+    transition: border-color .18s ease, transform .18s ease, background .18s ease;
+    background-image: repeating-linear-gradient(90deg, transparent, transparent 27px, rgba(0,0,0,0.02) 27px, rgba(0,0,0,0.02) 28px);
+  }
+  .door:hover {
+    border-left-color: var(--gold);
+    transform: translateY(-2px);
+  }
+  .door .door-kicker {
+    font-size: 0.74rem;
+    color: var(--text-soft);
+    margin-bottom: 10px;
+  }
+  .door h3 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 1.5rem;
+    margin: 0 0 8px;
+  }
+  .door p {
+    color: var(--text-soft);
+    font-size: 0.9rem;
+    margin: 0 0 16px;
+    max-width: 30ch;
+  }
+  .door .go {
+    font-size: 0.82rem;
+    color: var(--wine);
+    font-weight: 600;
+  }
+  .door .go::after { content: " \2192"; }
+
+  section.home-section { margin-bottom: 54px; }
+  section.home-section h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-style: italic;
+    font-size: 1.5rem;
+    margin: 0 0 4px;
+  }
+  section.home-section .sub {
+    color: var(--text-soft);
+    font-size: 0.92rem;
+    margin: 0 0 20px;
+  }
+
+  /* preview chip grid on home */
+  .chip-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip {
+    border: 1px solid var(--line);
+    background: var(--surface);
+    padding: 8px 14px;
+    font-size: 0.85rem;
+    border-radius: 2px;
+    color: var(--text);
+    transition: background .15s ease, border-color .15s ease;
+  }
+  .chip:hover { border-color: var(--wine); }
+  .chip .count { color: var(--text-soft); margin-left: 6px; font-variant-numeric: tabular-nums; }
+
+  /* ---------- Section header (list pages) ---------- */
+  .page-head {
+    padding: 40px 0 20px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 24px;
+  }
+  .breadcrumb {
+    font-size: 0.82rem;
+    color: var(--text-soft);
+    margin-bottom: 10px;
+  }
+  .breadcrumb button { background: none; border: none; color: var(--wine); font-size: 0.82rem; padding: 0; }
+  .breadcrumb button:hover { text-decoration: underline; }
+  .page-head h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-style: italic;
+    font-size: 2.1rem;
+    margin: 0;
+  }
+  .page-head .count-line { color: var(--text-soft); font-size: 0.9rem; margin-top: 6px; }
+
+  /* ---------- wine list ---------- */
+  .wine-list { }
+  .wine-row {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 14px;
+    padding: 16px 4px;
+    border-bottom: 1px solid var(--line);
+    flex-wrap: wrap;
+  }
+  .wine-row .thumb {
+    flex: 0 0 auto;
+    width: 46px; height: 46px;
+    border: 1px solid var(--line);
+    background: var(--parchment-deep);
+    border-radius: 3px;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+    padding: 0;
+    transition: border-color .15s ease;
+  }
+  :root[data-theme="dark"] .wine-row .thumb, .wine-row .thumb { background: var(--parchment-deep); }
+  .wine-row .thumb:hover { border-color: var(--gold); }
+  .wine-row .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .wine-row .thumb .thumb-icon { font-size: 1.2rem; opacity: 0.55; }
+  body:not(.can-write) .wine-row .thumb { cursor: default; opacity: 0.7; }
+
+  .wine-row .wine-main { min-width: 0; flex: 1 1 180px; }
+  .wine-row .wine-name {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 1.08rem;
+    margin: 0 0 3px;
+  }
+  .wine-row .wine-meta {
+    font-size: 0.84rem;
+    color: var(--text-soft);
+  }
+  .wine-row .wine-meta a { color: var(--wine); }
+  .wine-row .wine-meta a:hover { text-decoration: underline; }
+  .wine-row .wine-right {
+    display: flex; align-items: center; gap: 14px;
+    flex-shrink: 0;
+    font-size: 0.85rem;
+  }
+  .wine-row .vintage {
+    font-variant-numeric: tabular-nums;
+    color: var(--text);
+    min-width: 3ch;
+    text-align: right;
+  }
+  .wine-row .qty {
+    color: var(--text-soft);
+    min-width: 5ch;
+    text-align: right;
+  }
+  .wine-row .price {
+    color: var(--leaf);
+    font-variant-numeric: tabular-nums;
+    min-width: 5ch;
+    text-align: right;
+    font-weight: 600;
+  }
+  .wine-row .price.price-empty { color: var(--text-soft); font-weight: 400; }
+  .pos-badge {
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    background: transparent;
+    font-size: 0.78rem;
+    padding: 5px 9px;
+    border-radius: 2px;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .pos-badge:hover { background: rgba(169,129,47,0.12); }
+
+  .icon-btn {
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--text-soft);
+    width: 30px; height: 30px;
+    border-radius: 3px;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 0.9rem;
+    padding: 0;
+    transition: border-color .15s ease, color .15s ease;
+  }
+  .icon-btn:hover { border-color: var(--wine); color: var(--wine); }
+  body:not(.can-write) .icon-btn { display: none; }
+
+  /* inline edit / confirm states */
+  .wine-right.editing, .wine-right.confirming {
+    flex: 1 1 100%;
+    flex-wrap: wrap;
+    gap: 10px 14px;
+    background: var(--parchment-deep);
+    border: 1px dashed var(--gold);
+    padding: 12px;
+    border-radius: 3px;
+    margin-top: 4px;
+  }
+  :root[data-theme="dark"] .wine-right.editing, :root[data-theme="dark"] .wine-right.confirming { background: rgba(169,129,47,0.08); }
+  .f-label {
+    display: flex; flex-direction: column; gap: 4px;
+    font-size: 0.68rem;
+    color: var(--text-soft);
+    letter-spacing: 0.01em;
+  }
+  .f-input {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--text);
+    border-radius: 2px;
+    padding: 6px 8px;
+    width: 9ch;
+  }
+  .f-input:focus { border-color: var(--wine); }
+  .edit-actions { display: flex; align-items: flex-end; gap: 8px; margin-left: auto; }
+  .save-btn, .confirm-yes {
+    background: var(--wine);
+    color: var(--parchment);
+    border: 1px solid var(--wine);
+    padding: 8px 14px;
+    font-size: 0.82rem;
+    border-radius: 2px;
+    font-weight: 600;
+  }
+  .save-btn:hover, .confirm-yes:hover { background: var(--wine-bright); }
+  .confirm-yes { background: #7A2020; border-color: #7A2020; }
+  .cancel-btn {
+    background: transparent;
+    color: var(--text-soft);
+    border: 1px solid var(--line);
+    padding: 8px 14px;
+    font-size: 0.82rem;
+    border-radius: 2px;
+  }
+  .cancel-btn:hover { border-color: var(--text-soft); }
+  .f-error {
+    flex: 1 1 100%;
+    color: #a3273a;
+    font-size: 0.78rem;
+    margin: 0;
+  }
+  .confirm-text { font-size: 0.88rem; color: var(--text); }
+
+  /* toast + saving indicator */
+  .toast {
+    position: fixed;
+    left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+    transform: translate(-50%, 12px);
+    background: var(--wine-dark);
+    color: var(--parchment);
+    border: 1px solid var(--gold);
+    padding: 10px 18px;
+    border-radius: 3px;
+    font-size: 0.85rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .2s ease, transform .2s ease;
+    z-index: 200;
+    max-width: 90vw;
+    text-align: center;
+  }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+  body.saving::after {
+    content: "Salvataggio…";
+    position: fixed; top: env(safe-area-inset-top, 0px); left: 0; right: 0;
+    background: var(--gold); color: var(--wine-dark);
+    text-align: center; font-size: 0.78rem; padding: 4px;
+    z-index: 300;
+  }
+
+  /* ---------- shelf map ---------- */
+  .rack-wrap {
+
+    background: var(--wood);
+    border: 1px solid var(--line);
+    padding: 22px;
+    overflow-x: auto;
+  }
+  .rack {
+    display: grid;
+    grid-template-columns: 34px repeat(9, minmax(34px, 1fr));
+    gap: 5px;
+    min-width: 380px;
+  }
+  .rack .corner { }
+  .rack .col-label, .rack .row-label {
+    color: rgba(244,234,218,0.55);
+    font-size: 0.7rem;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .rack .row-label { justify-content: flex-end; padding-right: 4px; font-variant-numeric: tabular-nums;}
+  .slot {
+    aspect-ratio: 1 / 1;
+    border: 1px solid rgba(244,234,218,0.18);
+    background: rgba(244,234,218,0.04);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.72rem;
+    color: rgba(244,234,218,0.3);
+    border-radius: 2px;
+    transition: transform .12s ease, background .12s ease;
+  }
+  .slot.filled {
+    background: linear-gradient(160deg, var(--wine-bright), var(--wine-dark));
+    color: var(--parchment);
+    border-color: var(--gold-soft);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+  .slot.filled:hover { transform: scale(1.08); z-index: 2; }
+  .slot.empty { cursor: default; }
+  .rack-legend {
+    display: flex; align-items: center; gap: 18px;
+    margin-top: 16px;
+    font-size: 0.8rem;
+    color: var(--text-soft);
+    flex-wrap: wrap;
+  }
+  .rack-legend .sw { display: inline-flex; align-items: center; gap: 6px; }
+  .sw-box { width: 14px; height: 14px; border-radius: 2px; display: inline-block; }
+
+  /* ---------- slot panel / overlay ---------- */
+  .overlay {
+    position: fixed; inset: 0;
+    background: rgba(20,10,8,0.55);
+    display: flex; align-items: flex-end; justify-content: center;
+    z-index: 100;
+    padding: 0;
+  }
+  @media (min-width: 640px) {
+    .overlay { align-items: center; padding: 20px; }
+  }
+  .panel {
+    background: var(--surface);
+    color: var(--text);
+    width: 100%; max-width: 480px;
+    max-height: 82vh;
+    overflow-y: auto;
+    border-top: 3px solid var(--gold);
+    padding: 24px 22px calc(24px + env(safe-area-inset-bottom, 0px));
+  }
+  @media (min-width: 640px) { .panel { border-top: 3px solid var(--gold); border-radius: 3px; } }
+  .panel-head {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    margin-bottom: 6px;
+  }
+  .panel h3 { font-family: 'Fraunces', serif; font-style: italic; font-weight: 500; font-size: 1.4rem; margin: 0; }
+  .panel .close-btn {
+    background: none; border: none; color: var(--text-soft); font-size: 1.4rem; line-height: 1;
+    padding: 0 0 0 12px;
+  }
+  .panel .sub { color: var(--text-soft); font-size: 0.85rem; margin-bottom: 18px; }
+  .panel .wine-row:last-child { border-bottom: none; }
+
+  footer {
+    border-top: 1px solid var(--line);
+    padding: 26px 20px 40px;
+    text-align: center;
+    color: var(--text-soft);
+    font-size: 0.8rem;
+  }
+
+  .empty-state {
+    padding: 60px 10px; text-align: center; color: var(--text-soft);
+  }
+  .empty-state .serif { font-size: 1.3rem; color: var(--text); display: block; margin-bottom: 6px; }
+
+  ::selection { background: var(--gold-soft); color: var(--wine-dark); }
+  :focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+  /* ---------- Mobile ---------- */
+  @media (max-width: 640px) {
+    main { padding: 0 14px 64px; }
+
+    .topbar-inner { flex-direction: column; align-items: stretch; gap: 8px; padding: 12px 14px; }
+    .brand { font-size: 1.05rem; }
+    nav.pills {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      margin: 0 -14px;
+      padding: 0 14px;
+    }
+    nav.pills::-webkit-scrollbar { display: none; }
+    nav.pills button { flex: 0 0 auto; padding: 7px 11px; font-size: 0.82rem; }
+
+    .hero { margin-left: -14px; margin-right: -14px; padding: 40px 14px 32px; }
+    .hero p.lead { font-size: 0.96rem; }
+    .stat-strip { gap: 14px 0; }
+    .stat-strip .stat {
+      flex: 0 0 auto;
+      padding: 0 16px 0 0;
+      margin-right: 16px;
+    }
+    .stat .n { font-size: 1.55rem; }
+
+    .doors { gap: 12px; margin-bottom: 40px; }
+    .door { padding: 20px 18px; }
+
+    section.home-section { margin-bottom: 40px; }
+
+    .page-head { padding: 28px 0 16px; }
+    .page-head h2 { font-size: 1.65rem; }
+
+    .wine-row {
+      flex-wrap: wrap;
+      padding: 14px 2px;
+      gap: 10px;
+    }
+    .wine-row .thumb { width: 40px; height: 40px; }
+    .wine-row .wine-main { flex: 1 1 auto; min-width: 0; }
+    .wine-row .wine-right {
+      flex: 1 1 100%;
+      justify-content: space-between;
+      margin-top: 4px;
+      flex-wrap: wrap;
+      row-gap: 8px;
+    }
+    .pos-badge { padding: 7px 10px; }
+    .icon-btn { width: 34px; height: 34px; font-size: 1rem; }
+    .wine-right.editing, .wine-right.confirming { padding: 10px; }
+    .f-input { width: 7ch; }
+    .edit-actions { flex: 1 1 100%; margin-left: 0; justify-content: flex-end; }
+
+    .rack-wrap { padding: 14px 10px; margin: 0 -14px; width: calc(100% + 28px); border-left: none; border-right: none; }
+    .rack {
+      grid-template-columns: 22px repeat(9, minmax(0, 1fr));
+      gap: 3px;
+      min-width: 0;
+    }
+    .rack .row-label { font-size: 0.62rem; padding-right: 2px; }
+    .rack .col-label { font-size: 0.62rem; }
+    .slot { font-size: 0.62rem; }
+    .rack-legend { gap: 10px 16px; font-size: 0.75rem; }
+
+    .panel { max-height: 88vh; padding: 20px 16px calc(20px + env(safe-area-inset-bottom, 0px)); }
+    .panel h3 { font-size: 1.2rem; }
+  }
+
+  /* ---------- setup / loading screen (static site, pre-Supabase) ---------- */
+  .setup-screen {
+    max-width: 560px;
+    margin: 60px auto;
+    padding: 28px 26px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--gold);
+  }
+  .setup-screen h2 {
+    font-family: 'Fraunces', serif; font-style: italic; font-weight: 500;
+    margin: 0 0 10px;
+  }
+  .setup-screen p { color: var(--text-soft); line-height: 1.6; margin: 0; }
+  .setup-screen code {
+    background: var(--parchment-deep);
+    padding: 1px 5px;
+    border-radius: 2px;
+    font-size: 0.9em;
+  }
+
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar-inner">
+    <a href="#/home" class="brand" onclick="return true"><span class="mark">La</span> Cantina di Egon</a>
+    <nav class="pills" id="navPills">
+      <button data-route="home">Home</button>
+      <button data-route="tipo">Tipologie</button>
+      <button data-route="cantina">Cantine</button>
+      <button data-route="mappa">Mappa scaffali</button>
+    </nav>
+  </div>
+</div>
+<main id="app"></main>
+<footer>Catalogo personale della cantina &middot; ispirato alla grafica di Cantina Spada, Valpolicella</footer>
+<div id="overlayRoot"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function () {
+  "use strict";
+
+  // =====================================================================
+  // CONFIGURAZIONE — incolla qui i valori del tuo progetto Supabase
+  // (Project Settings > API, nella dashboard di supabase.com)
+  // =====================================================================
+  const SUPABASE_URL = "https://xqhoznbjyoityjtrolzb.supabase.co";
+  const SUPABASE_ANON_KEY = "sb_publishable_f_jswE7Sf0BU2hHKkQYuEg_ZT7e1rGh";
+  const IMAGE_BUCKET = "etichette"; // nome del bucket di storage creato su Supabase
+  // =====================================================================
+
+  const isConfigured = !SUPABASE_URL.startsWith("INSERISCI") && !SUPABASE_ANON_KEY.startsWith("INSERISCI");
+
+  if (!isConfigured) {
+    document.getElementById('app').innerHTML = `
+      <div class="setup-screen">
+        <h2>Configurazione richiesta</h2>
+        <p>Questo sito si appoggia a un progetto Supabase gratuito per salvare bottiglie, foto e prezzi.
+        Apri il file <code>index.html</code>, cerca "CONFIGURAZIONE" in cima allo script e inserisci
+        l'URL e la chiave anon del tuo progetto (li trovi in Project Settings &rarr; API su supabase.com).
+        Le istruzioni complete sono nel file README.md.</p>
+      </div>`;
+    return;
+  }
+
+  const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  let WINES = [];
+
+  const fmtType = t => t || "Senza tipologia";
+  const fmtCantina = c => c || "Cantina non specificata";
+  const fmtName = w => w.nome || w.cantina || fmtType(w.tipo);
+  const fmtPrice = p => (p === null || p === undefined || isNaN(p)) ? null : '€ ' + Number(p).toFixed(2).replace('.', ',');
+
+  function posKey(p) { return Number(p).toFixed(1); }
+  function posLabel(p) {
+    const shelf = Math.floor(p);
+    const slot = Math.round((p - shelf) * 10);
+    return "Scaffale " + shelf + " &middot; pos. " + slot;
+  }
+  function posShort(p) {
+    const shelf = Math.floor(p);
+    const slot = Math.round((p - shelf) * 10);
+    return shelf + "." + slot;
+  }
+  function parsePos(str) {
+    const m = String(str).trim().match(/^([1-9])\.?([1-9])$/);
+    if (!m) return null;
+    return parseFloat(m[1] + '.' + m[2]);
+  }
+
+  // ---- derived indexes (rebuilt after every data change) ----
+  let byType = new Map();
+  let byCantina = new Map();
+  let byPos = new Map();
+  let byId = new Map();
+  let totalBottles = 0;
+
+  function rebuildIndexes() {
+    byType = new Map(); byCantina = new Map(); byPos = new Map(); byId = new Map();
+    totalBottles = 0;
+    WINES.forEach(w => {
+      const t = fmtType(w.tipo);
+      const c = fmtCantina(w.cantina);
+      if (!byType.has(t)) byType.set(t, []);
+      byType.get(t).push(w);
+      if (!byCantina.has(c)) byCantina.set(c, []);
+      byCantina.get(c).push(w);
+      const pk = posKey(w.posizione);
+      if (!byPos.has(pk)) byPos.set(pk, []);
+      byPos.get(pk).push(w);
+      byId.set(w.id, w);
+      totalBottles += w.quantita;
+    });
+  }
+
+  function sortedEntries(map) {
+    return Array.from(map.entries()).sort((a, b) => {
+      const qa = a[1].reduce((s, w) => s + w.quantita, 0);
+      const qb = b[1].reduce((s, w) => s + w.quantita, 0);
+      if (qb !== qa) return qb - qa;
+      return a[0].localeCompare(b[0], 'it');
+    });
+  }
+
+  function sortedWines(list) {
+    return [...list].sort((a, b) => {
+      const na = fmtName(a), nb = fmtName(b);
+      if (na !== nb) return na.localeCompare(nb, 'it');
+      return b.annata - a.annata;
+    });
+  }
+
+  // ---- remote data load ----
+  async function loadWines() {
+    const { data, error } = await sb.from('wines').select('*').order('posizione', { ascending: true });
+    if (error) {
+      document.getElementById('app').innerHTML = `<div class="setup-screen"><h2>Errore di connessione</h2><p>Non riesco a leggere i dati da Supabase: ${escHtml(error.message)}. Controlla URL/chiave e che la tabella "wines" esista (vedi schema.sql).</p></div>`;
+      throw error;
+    }
+    WINES = (data || []).map(w => ({
+      id: w.id,
+      cantina: w.cantina,
+      tipo: w.tipo,
+      nome: w.nome,
+      annata: w.annata,
+      quantita: w.quantita,
+      posizione: Number(w.posizione),
+      dimensione: w.dimensione,
+      prezzo: w.prezzo === null ? null : Number(w.prezzo),
+      immagineUrl: w.immagine_url,
+    }));
+    rebuildIndexes();
+  }
+
+  // ---- toast ----
+  let toastTimer = null;
+  function showToast(msg) {
+    let el = document.getElementById('toast');
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'toast';
+      el.className = 'toast';
+      document.body.appendChild(el);
+    }
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.classList.remove('show'), 3200);
+  }
+
+  function setSaving(on) {
+    document.body.classList.toggle('saving', on);
+  }
+
+  // ---- routing ----
+  function parseHash() {
+    const h = location.hash.replace(/^#\/?/, '');
+    const parts = h.split('/').filter(Boolean).map(decodeURIComponent);
+    if (parts.length === 0) return { route: 'home' };
+    return { route: parts[0], key: parts[1] };
+  }
+
+  function go(route, key) {
+    location.hash = '/' + route + (key ? '/' + encodeURIComponent(key) : '');
+  }
+  window.__go = go;
+
+  let editingId = null;
+  let confirmingId = null;
+
+  function render() {
+    const { route, key } = parseHash();
+    document.querySelectorAll('#navPills button').forEach(b => {
+      const isActive = b.dataset.route === route;
+      b.classList.toggle('active', isActive);
+      if (isActive) b.scrollIntoView({ inline: 'center', block: 'nearest' });
+    });
+    const app = document.getElementById('app');
+    closeOverlay();
+    if (route === 'tipo' && key) {
+      app.innerHTML = renderDetailPage('tipo', key);
+    } else if (route === 'cantina' && key) {
+      app.innerHTML = renderDetailPage('cantina', key);
+    } else if (route === 'tipo') {
+      app.innerHTML = renderIndexPage('tipo');
+    } else if (route === 'cantina') {
+      app.innerHTML = renderIndexPage('cantina');
+    } else if (route === 'mappa') {
+      app.innerHTML = renderMapPage();
+      bindMapEvents();
+      if (key) openSlotPanel(key);
+      bindPositionLinks();
+      bindRowActions();
+      return;
+    } else {
+      app.innerHTML = renderHome();
+    }
+    window.scrollTo({ top: 0 });
+    bindPositionLinks();
+    bindRowActions();
+  }
+
+  // ---- HOME ----
+  function renderHome() {
+    const nTypes = byType.size;
+    const nCantine = byCantina.size;
+    const topTypes = sortedEntries(byType).slice(0, 10);
+    const topCantine = sortedEntries(byCantina).slice(0, 10);
+
+    return `
+      <section class="hero" style="margin-left:-20px;margin-right:-20px;padding-left:20px;padding-right:20px;">
+        <div class="hero-inner">
+          <p class="hero-eyebrow">Catalogo personale &middot; Valpolicella e dintorni</p>
+          <h1>La cantina di Egon</h1>
+          <p class="lead">Un archivio delle bottiglie custodite in cantina: sfoglia per tipologia, per produttore, oppure vai direttamente allo scaffale dove riposano.</p>
+          <div class="stat-strip">
+            <div class="stat"><span class="n">${totalBottles}</span><span class="l">bottiglie</span></div>
+            <div class="stat"><span class="n">${nTypes}</span><span class="l">tipologie</span></div>
+            <div class="stat"><span class="n">${nCantine}</span><span class="l">cantine</span></div>
+            <div class="stat"><span class="n">9</span><span class="l">scaffali</span></div>
+          </div>
+        </div>
+      </section>
+
+      <div class="doors">
+        <button class="door" onclick="__go('tipo')">
+          <div class="door-kicker">Sfoglia</div>
+          <h3>Per tipologia</h3>
+          <p>Amarone, Primitivo, Sangiovese e altre ${nTypes} tipologie in cantina.</p>
+          <div class="go">Scegli una tipologia</div>
+        </button>
+        <button class="door" onclick="__go('cantina')">
+          <div class="door-kicker">Sfoglia</div>
+          <h3>Per cantina</h3>
+          <p>${nCantine} produttori, da Speri e Spada fino alle etichette pugliesi.</p>
+          <div class="go">Scegli un produttore</div>
+        </button>
+        <button class="door" onclick="__go('mappa')">
+          <div class="door-kicker">Trova</div>
+          <h3>Mappa degli scaffali</h3>
+          <p>Guarda dove si trova ogni bottiglia, scaffale per scaffale.</p>
+          <div class="go">Apri la mappa</div>
+        </button>
+      </div>
+
+      <section class="home-section">
+        <h2>Le tipologie piu presenti</h2>
+        <p class="sub">Ordinate per numero di bottiglie in cantina.</p>
+        <div class="chip-grid">
+          ${topTypes.map(([t, list]) => {
+            const q = list.reduce((s, w) => s + w.quantita, 0);
+            return `<button class="chip" onclick="__go('tipo','${escAttr(t)}')">${escHtml(t)}<span class="count">${q}</span></button>`;
+          }).join('')}
+        </div>
+      </section>
+
+      <section class="home-section">
+        <h2>Cantine con piu bottiglie</h2>
+        <p class="sub">I produttori meglio rappresentati nella tua cantina.</p>
+        <div class="chip-grid">
+          ${topCantine.map(([c, list]) => {
+            const q = list.reduce((s, w) => s + w.quantita, 0);
+            return `<button class="chip" onclick="__go('cantina','${escAttr(c)}')">${escHtml(c)}<span class="count">${q}</span></button>`;
+          }).join('')}
+        </div>
+      </section>
+    `;
+  }
+
+  // ---- INDEX ----
+  function renderIndexPage(kind) {
+    const map = kind === 'tipo' ? byType : byCantina;
+    const title = kind === 'tipo' ? 'Tutte le tipologie' : 'Tutte le cantine';
+    const entries = sortedEntries(map);
+    return `
+      <div class="page-head">
+        <div class="breadcrumb"><button onclick="__go('home')">Home</button> / ${title}</div>
+        <h2>${title}</h2>
+        <div class="count-line">${entries.length} voci &middot; ${totalBottles} bottiglie in totale</div>
+      </div>
+      <div class="chip-grid">
+        ${entries.map(([name, list]) => {
+          const q = list.reduce((s, w) => s + w.quantita, 0);
+          return `<button class="chip" onclick="__go('${kind}','${escAttr(name)}')">${escHtml(name)}<span class="count">${q}</span></button>`;
+        }).join('')}
+      </div>
+    `;
+  }
+
+  // ---- DETAIL ----
+  function renderDetailPage(kind, key) {
+    const map = kind === 'tipo' ? byType : byCantina;
+    const list = map.get(key) || [];
+    const sorted = sortedWines(list);
+    const total = list.reduce((s, w) => s + w.quantita, 0);
+    return `
+      <div class="page-head">
+        <div class="breadcrumb"><button onclick="__go('home')">Home</button> / <button onclick="__go('${kind}')">${kind === 'tipo' ? 'Tipologie' : 'Cantine'}</button> / ${escHtml(key)}</div>
+        <h2>${escHtml(key)}</h2>
+        <div class="count-line">${list.length} etichette &middot; ${total} bottiglie</div>
+      </div>
+      <div class="wine-list">
+      ${sorted.length ? sorted.map(w => wineRow(w, kind)).join('') : emptyState()}
+      </div>
+    `;
+  }
+
+  function thumbHtml(w) {
+    if (w.immagineUrl) {
+      return `<img src="${escAttr(w.immagineUrl)}" alt="Etichetta di ${escHtml(fmtName(w))}">`;
+    }
+    return `<span class="thumb-icon" aria-hidden="true">🍾</span>`;
+  }
+
+  function wineRow(w, hideKind) {
+    const isEditing = editingId === w.id;
+    const isConfirming = confirmingId === w.id;
+    const type = fmtType(w.tipo);
+    const cantina = fmtCantina(w.cantina);
+    const metaParts = [];
+    if (hideKind !== 'cantina') metaParts.push(`<a href="javascript:void(0)" onclick="__go('cantina','${escAttr(cantina)}')">${escHtml(cantina)}</a>`);
+    if (hideKind !== 'tipo') metaParts.push(`<a href="javascript:void(0)" onclick="__go('tipo','${escAttr(type)}')">${escHtml(type)}</a>`);
+
+    const priceDisp = fmtPrice(w.prezzo);
+
+    const rightHtml = isEditing ? `
+        <div class="wine-right editing">
+          <label class="f-label">Annata<input type="number" class="f-input f-annata" value="${w.annata}" inputmode="numeric"></label>
+          <label class="f-label">Bott.<input type="number" class="f-input f-qty" value="${w.quantita}" min="0" inputmode="numeric"></label>
+          <label class="f-label">Scaffale<input type="text" class="f-input f-pos" value="${posShort(w.posizione)}" placeholder="es. 3.4"></label>
+          <label class="f-label">Prezzo &euro;<input type="number" class="f-input f-price" value="${w.prezzo !== null && w.prezzo !== undefined ? w.prezzo : ''}" min="0" step="0.5" placeholder="&mdash;"></label>
+          <div class="edit-actions">
+            <button class="save-btn" data-id="${w.id}">Salva</button>
+            <button class="cancel-btn" data-id="${w.id}">Annulla</button>
+          </div>
+          <p class="f-error" id="err-${w.id}" hidden>Posizione non valida. Usa il formato scaffale.posto, es. 3.4</p>
+        </div>
+      ` : isConfirming ? `
+        <div class="wine-right confirming">
+          <span class="confirm-text">Segnare come bevuta e rimuoverla dal catalogo?</span>
+          <div class="edit-actions">
+            <button class="confirm-yes" data-id="${w.id}">Sì, bevuta</button>
+            <button class="cancel-btn" data-id="${w.id}">Annulla</button>
+          </div>
+        </div>
+      ` : `
+        <div class="wine-right">
+          <span class="vintage">${w.annata}</span>
+          <span class="qty">${w.quantita} bott.</span>
+          <span class="price ${priceDisp ? '' : 'price-empty'}">${priceDisp || '&ndash;'}</span>
+          <button class="pos-badge" data-pos="${posKey(w.posizione)}">${posShort(w.posizione)}</button>
+          <button class="icon-btn edit-btn" data-id="${w.id}" title="Modifica quantità, annata, posizione e prezzo" aria-label="Modifica">&#9998;</button>
+          <button class="icon-btn del-btn" data-id="${w.id}" title="Segna come bevuta" aria-label="Segna come bevuta">&#128465;</button>
+        </div>
+      `;
+
+    return `
+      <div class="wine-row" data-id="${w.id}">
+        <button class="thumb" data-id="${w.id}" title="Aggiungi o cambia foto della bottiglia" aria-label="Foto bottiglia">
+          ${thumbHtml(w)}
+        </button>
+        <div class="wine-main">
+          <p class="wine-name">${escHtml(fmtName(w))}</p>
+          <p class="wine-meta">${metaParts.join(' &middot; ')}</p>
+        </div>
+        ${rightHtml}
+        <input type="file" accept="image/*" class="file-input" data-id="${w.id}" hidden>
+      </div>
+    `;
+  }
+
+  function emptyState() {
+    return `<div class="empty-state"><span class="serif">Nessuna bottiglia trovata</span>Prova a tornare alla home.</div>`;
+  }
+
+  function bindPositionLinks() {
+    document.querySelectorAll('.pos-badge').forEach(btn => {
+      btn.addEventListener('click', () => go('mappa', btn.dataset.pos));
+    });
+  }
+
+  function refreshRow(id) {
+    const row = document.querySelector(`.wine-row[data-id="${id}"]`);
+    const w = byId.get(id);
+    if (!row || !w) { render(); return; }
+    const { route } = parseHash();
+    const hideKind = (route === 'tipo' || route === 'cantina') ? route : null;
+    row.outerHTML = wineRow(w, hideKind);
+    bindRowActions();
+    bindPositionLinks();
+  }
+
+  function bindRowActions() {
+    document.querySelectorAll('.thumb').forEach(btn => {
+      btn.onclick = () => {
+        const row = btn.closest('.wine-row');
+        row.querySelector('.file-input').click();
+      };
+    });
+    document.querySelectorAll('.file-input').forEach(inp => {
+      inp.onchange = async () => {
+        const file = inp.files && inp.files[0];
+        if (!file) return;
+        const id = inp.dataset.id;
+        setSaving(true);
+        try {
+          const ext = (file.name.split('.').pop() || 'jpg').toLowerCase();
+          const path = id + '-' + Date.now() + '.' + ext;
+          const { error: upErr } = await sb.storage.from(IMAGE_BUCKET).upload(path, file, { upsert: true });
+          if (upErr) throw upErr;
+          const { data: pub } = sb.storage.from(IMAGE_BUCKET).getPublicUrl(path);
+          const url = pub.publicUrl;
+          const { error: updErr } = await sb.from('wines').update({ immagine_url: url }).eq('id', id);
+          if (updErr) throw updErr;
+          const w = byId.get(id);
+          w.immagineUrl = url;
+          refreshRow(id);
+        } catch (e) {
+          showToast('Caricamento immagine non riuscito: ' + (e.message || e));
+        } finally {
+          setSaving(false);
+        }
+      };
+    });
+    document.querySelectorAll('.edit-btn').forEach(btn => {
+      btn.onclick = () => {
+        editingId = btn.dataset.id;
+        confirmingId = null;
+        refreshRow(editingId);
+        const row = document.querySelector(`.wine-row[data-id="${editingId}"]`);
+        const first = row && row.querySelector('.f-annata');
+        if (first) first.focus();
+      };
+    });
+    document.querySelectorAll('.del-btn').forEach(btn => {
+      btn.onclick = () => {
+        confirmingId = btn.dataset.id;
+        editingId = null;
+        refreshRow(confirmingId);
+      };
+    });
+    document.querySelectorAll('.cancel-btn').forEach(btn => {
+      btn.onclick = () => {
+        const id = btn.dataset.id;
+        editingId = null;
+        confirmingId = null;
+        refreshRow(id);
+      };
+    });
+    document.querySelectorAll('.confirm-yes').forEach(btn => {
+      btn.onclick = async () => {
+        const id = btn.dataset.id;
+        setSaving(true);
+        try {
+          const { error } = await sb.from('wines').delete().eq('id', id);
+          if (error) throw error;
+          WINES = WINES.filter(w => w.id !== id);
+          rebuildIndexes();
+          confirmingId = null;
+          render();
+        } catch (e) {
+          showToast('Impossibile rimuovere la bottiglia: ' + (e.message || e));
+        } finally {
+          setSaving(false);
+        }
+      };
+    });
+    document.querySelectorAll('.save-btn').forEach(btn => {
+      btn.onclick = async () => {
+        const id = btn.dataset.id;
+        const row = document.querySelector(`.wine-row[data-id="${id}"]`);
+        const w = byId.get(id);
+        const errEl = document.getElementById('err-' + id);
+        const annataVal = parseInt(row.querySelector('.f-annata').value, 10);
+        const qtyVal = parseInt(row.querySelector('.f-qty').value, 10);
+        const posVal = parsePos(row.querySelector('.f-pos').value);
+        const priceRaw = row.querySelector('.f-price').value;
+        const priceVal = priceRaw === '' ? null : parseFloat(priceRaw);
+
+        if (posVal === null) {
+          if (errEl) errEl.hidden = false;
+          return;
+        }
+        const payload = {
+          annata: !isNaN(annataVal) ? annataVal : w.annata,
+          quantita: (!isNaN(qtyVal) && qtyVal >= 0) ? qtyVal : w.quantita,
+          posizione: posVal,
+          prezzo: (priceVal !== null && !isNaN(priceVal)) ? priceVal : null,
+        };
+        setSaving(true);
+        try {
+          const { error } = await sb.from('wines').update(payload).eq('id', id);
+          if (error) throw error;
+          Object.assign(w, payload);
+          rebuildIndexes();
+          editingId = null;
+          render();
+        } catch (e) {
+          showToast('Salvataggio non riuscito: ' + (e.message || e));
+        } finally {
+          setSaving(false);
+        }
+      };
+    });
+  }
+
+  // ---- SHELF MAP ----
+  function renderMapPage() {
+    const shelves = [1,2,3,4,5,6,7,8,9];
+    const cols = [1,2,3,4,5,6,7,8,9];
+    let rackHtml = `<div class="corner"></div>`;
+    cols.forEach(c => rackHtml += `<div class="col-label">${c}</div>`);
+    shelves.forEach(s => {
+      rackHtml += `<div class="row-label">S${s}</div>`;
+      cols.forEach(c => {
+        const pk = s + '.' + c;
+        const wines = byPos.get(pk);
+        if (wines) {
+          const qty = wines.reduce((sum, w) => sum + w.quantita, 0);
+          rackHtml += `<div class="slot filled" data-pos="${pk}" title="${wines.length} etichetta/e">${qty}</div>`;
+        } else {
+          rackHtml += `<div class="slot empty"></div>`;
+        }
+      });
+    });
+
+    return `
+      <div class="page-head">
+        <div class="breadcrumb"><button onclick="__go('home')">Home</button> / Mappa scaffali</div>
+        <h2>Mappa degli scaffali</h2>
+        <div class="count-line">9 scaffali &middot; ogni cella mostra il numero di bottiglie custodite in quella posizione</div>
+      </div>
+      <div class="rack-wrap">
+        <div class="rack">${rackHtml}</div>
+        <div class="rack-legend">
+          <span class="sw"><span class="sw-box" style="background:linear-gradient(160deg, var(--wine-bright), var(--wine-dark)); border:1px solid var(--gold-soft);"></span> posizione occupata (numero = bottiglie)</span>
+          <span class="sw"><span class="sw-box" style="background:rgba(244,234,218,0.06); border:1px solid rgba(244,234,218,0.18);"></span> posizione libera</span>
+        </div>
+      </div>
+    `;
+  }
+
+  function bindMapEvents() {
+    document.querySelectorAll('.slot.filled').forEach(slot => {
+      slot.addEventListener('click', () => {
+        location.hash = '/mappa/' + slot.dataset.pos;
+      });
+    });
+  }
+
+  function openSlotPanel(pk) {
+    const wines = byPos.get(pk);
+    if (!wines) return;
+    const p = parseFloat(pk);
+    const root = document.getElementById('overlayRoot');
+    root.innerHTML = `
+      <div class="overlay" id="overlayBg">
+        <div class="panel">
+          <div class="panel-head">
+            <h3>${posLabel(p)}</h3>
+            <button class="close-btn" id="closeOverlayBtn" aria-label="Chiudi">&times;</button>
+          </div>
+          <p class="sub">${wines.length} etichetta/e in questa posizione</p>
+          <div class="wine-list">
+          ${sortedWines(wines).map(w => wineRow(w)).join('')}
+          </div>
+        </div>
+      </div>
+    `;
+    document.getElementById('closeOverlayBtn').addEventListener('click', () => {
+      history.replaceState(null, '', '#/mappa');
+      closeOverlay();
+    });
+    document.getElementById('overlayBg').addEventListener('click', (e) => {
+      if (e.target.id === 'overlayBg') {
+        history.replaceState(null, '', '#/mappa');
+        closeOverlay();
+      }
+    });
+    bindPositionLinks();
+    bindRowActions();
+  }
+
+  function closeOverlay() {
+    document.getElementById('overlayRoot').innerHTML = '';
+  }
+
+  function escHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[c]));
+  }
+  function escAttr(s) {
+    return String(s).replace(/'/g, "\\'").replace(/"/g, '&quot;');
+  }
+
+  document.getElementById('navPills').addEventListener('click', e => {
+    const btn = e.target.closest('button[data-route]');
+    if (btn) go(btn.dataset.route);
+  });
+
+  window.addEventListener('hashchange', render);
+
+  // ---- boot ----
+  document.getElementById('app').innerHTML = '<div class="setup-screen"><h2>Caricamento…</h2><p>Sto leggendo il catalogo da Supabase.</p></div>';
+  loadWines().then(render).catch(() => {});
+})();
+
+</script>
+</body>
+</html>
