@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://mywinecellar.pages.dev/sitemap.xml
